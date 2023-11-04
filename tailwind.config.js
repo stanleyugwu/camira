@@ -25,7 +25,6 @@ const config = {
     // because we have a custom Text component that
     // will auto scale supplied font sizes
     fontSize: false,
-    spacing: SPACE_UNITS,
     fontFamily: {
       muli: "Muli",
     },
@@ -42,7 +41,6 @@ const config = {
       ),
     },
   },
-  plugins: [],
 };
 
 module.exports = config;

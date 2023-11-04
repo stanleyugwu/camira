@@ -1,4 +1,4 @@
-import { Animated, StatusBar } from "react-native";
+import { Animated } from "react-native";
 import ThemeColors from "~constants/theme";
 import { CustomStack } from "~navigator";
 import CustomHeader from "~navigator/CustomHeader";
@@ -7,6 +7,8 @@ import {
   TransitionSpec,
 } from "@react-navigation/stack/lib/typescript/src/types";
 import React from "react";
+import { StatusBar } from "expo-status-bar";
+import useLoadAppAssets from "~utils/useLoadAppAssets";
 
 const spec: TransitionSpec = {
   animation: "timing",
@@ -68,29 +70,37 @@ const cardInterpolator: StackCardStyleInterpolator = ({
 };
 
 export default function Layout() {
-  StatusBar.setBackgroundColor(ThemeColors.primary);
+  const assets = useLoadAppAssets();
+  if (!assets.ready) return null; // keep showing the splash screen
+
   return (
-    <CustomStack
-      screenOptions={{
-        gestureEnabled: true,
-        headerShadowVisible: false,
-        headerMode: "float",
-        header: CustomHeader,
-        cardStyle: { backgroundColor: ThemeColors.primary },
-        cardStyleInterpolator: cardInterpolator,
-        transitionSpec: {
-          open: spec,
-          close: spec,
-        },
-      }}
-    >
-      <CustomStack.Screen
-        name="(onboarding)/index"
-        options={{
-          headerShown: false,
+    <>
+      <StatusBar backgroundColor={ThemeColors.accent} style="inverted" />
+      <CustomStack
+        screenOptions={{
+          gestureEnabled: true,
+          headerShadowVisible: false,
+          headerMode: "float",
+          header: CustomHeader,
+          cardStyle: { backgroundColor: ThemeColors.primary },
+          cardStyleInterpolator: cardInterpolator,
+          transitionSpec: {
+            open: spec,
+            close: spec,
+          },
         }}
-      />
-      <CustomStack.Screen name="home/index" options={{ headerShown: false }} />
-    </CustomStack>
+      >
+        <CustomStack.Screen
+          name="(onboarding)/index"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <CustomStack.Screen
+          name="home/index"
+          options={{ headerShown: false }}
+        />
+      </CustomStack>
+    </>
   );
 }
