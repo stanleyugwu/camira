@@ -2,7 +2,7 @@ import { StackHeaderProps } from "@react-navigation/stack";
 import React from "react";
 import { View, Animated } from "react-native";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
-import ThemeColors from "../constants/theme";
+import ThemeColors from "~constants/theme";
 
 /**
  * Custom generic Header component for navigator

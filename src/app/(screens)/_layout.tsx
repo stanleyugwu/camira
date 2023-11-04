@@ -1,12 +1,12 @@
 import { Animated, StatusBar } from "react-native";
-import ThemeColors from "../../constants/theme";
-import { CustomStack } from "../../navigator";
+import ThemeColors from "~constants/theme";
+import { CustomStack } from "~navigator";
+import CustomHeader from "~navigator/CustomHeader";
 import {
   StackCardStyleInterpolator,
   TransitionSpec,
 } from "@react-navigation/stack/lib/typescript/src/types";
 import React from "react";
-import CustomHeader from "../../navigator/CustomHeader";
 
 const spec: TransitionSpec = {
   animation: "timing",
