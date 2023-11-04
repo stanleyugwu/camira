@@ -3,6 +3,7 @@ import React from "react";
 import { View, Animated } from "react-native";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 import ThemeColors from "~constants/theme";
+import { scale } from "react-native-size-matters";
 
 /**
  * Custom generic Header component for navigator
@@ -58,14 +59,14 @@ const CustomHeader: (props: StackHeaderProps) => React.ReactNode = ({
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 24 }}>
       {canGoBack() && (
         <Animated.View style={[animatedBackStyle]}>
           <Icon
             name="arrow-back-ios"
             color={ThemeColors.black}
             onPress={goBack}
-            size={28}
+            size={scale(28)}
           />
         </Animated.View>
       )}
