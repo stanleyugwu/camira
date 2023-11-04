@@ -6,5 +6,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "Camira",
   scheme: ["camira"],
   plugins: ["expo-router"],
-  experiments: { tsconfigPaths: true, typedRoutes: true, turboModules: true },
+  experiments: { tsconfigPaths: true, typedRoutes: true },
 });
