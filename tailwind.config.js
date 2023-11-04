@@ -2,6 +2,7 @@
 
 const { scale, verticalScale } = require("react-native-size-matters");
 const AppThemeColors = require("./src/constants/theme");
+const plugin = require("tailwindcss/plugin");
 
 // we want to be able to use scaled units in tailwind styles,
 // so w-10 in tailwind style should return {width:scale(10)}
@@ -41,6 +42,27 @@ const config = {
       ),
     },
   },
+  plugins: [
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".box-shadow":
+          Platform.OS == "android"
+            ? {
+                elevation: 30,
+                shadowColor: "#00000022",
+              }
+            : {
+                shadowColor: "#00000022",
+                shadowOffset: {
+                  width: 0,
+                  height: 0,
+                },
+                shadowOpacity: 0.4,
+                shadowRadius: 10.0,
+              },
+      });
+    }),
+  ],
 };
 
 module.exports = config;
