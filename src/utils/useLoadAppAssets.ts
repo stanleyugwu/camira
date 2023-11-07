@@ -40,7 +40,15 @@ const useLoadAppAssets = () => {
           },
         ]);
 
-        await Promise.all([...fontAssets]);
+        // cache onboarding images
+        const imageAssets = cacheImages([
+          require('~screens/(onboarding)/images/top-up.png'),
+          require('~screens/(onboarding)/images/document.png'),
+          require('~screens/(onboarding)/images/qrcode1.png'),
+          require('~screens/(onboarding)/images/qrcode2.png'),
+        ]);
+
+        await Promise.all([...fontAssets, ...imageAssets]);
       } catch (e) {
         console.warn(e);
       } finally {
