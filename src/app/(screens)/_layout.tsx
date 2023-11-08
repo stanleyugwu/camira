@@ -66,6 +66,9 @@ const cardInterpolator: StackCardStyleInterpolator = ({
       ],
       opacity: multplyProgress([0, 1, 0]),
     },
+    containerStyle: {
+      backgroundColor: ThemeColors.primary,
+    },
   };
 };
 
@@ -75,14 +78,14 @@ export default function Layout() {
 
   return (
     <>
-      <StatusBar backgroundColor={ThemeColors.accent} style="inverted" />
+      <StatusBar backgroundColor={ThemeColors.primary} style="inverted" />
       <CustomStack
         screenOptions={{
+          freezeOnBlur: true,
           gestureEnabled: true,
           headerShadowVisible: false,
           headerMode: "float",
           header: CustomHeader,
-          cardStyle: { backgroundColor: ThemeColors.primary },
           cardStyleInterpolator: cardInterpolator,
           transitionSpec: {
             open: spec,
@@ -100,6 +103,7 @@ export default function Layout() {
           name="home/index"
           options={{ headerShown: false }}
         />
+        <CustomStack.Screen name="top-up/index" />
       </CustomStack>
     </>
   );
