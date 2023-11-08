@@ -1,13 +1,16 @@
-import { View, ViewProps } from "react-native";
+import { ScrollViewProps } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import tw from "~utils/tailwind";
 
-export type ScreenProps = ViewProps;
+export type ScreenProps = ScrollViewProps;
 
 /**
  * Wraps children with necessary styles and provisions to suit a screen
  */
 const Screen = (props: ScreenProps) => {
-  return <View style={[tw`p-6 flex-1 bg-primary`, props.style]}>{props.children}</View>;
+  return (
+    <ScrollView style={tw`p-6 flex-1 bg-primary`}>{props.children}</ScrollView>
+  );
 };
 
 export default Screen;
