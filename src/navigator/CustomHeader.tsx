@@ -59,7 +59,7 @@ const CustomHeader: (props: StackHeaderProps) => React.ReactNode = ({
   };
 
   return (
-    <View style={{ padding: 24 }}>
+    <View style={{ padding: 24, backgroundColor: ThemeColors.primary }}>
       {canGoBack() && (
         <Animated.View style={[animatedBackStyle]}>
           <Icon
