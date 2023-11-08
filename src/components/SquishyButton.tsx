@@ -40,7 +40,7 @@ const SquishyButton = ({
    */
   const squish = (callback?: () => void) => {
     animatedValue.value = withSequence(
-      withSpring(0.85),
+      withSpring(1.1),
       withSpring(1, undefined, () => {
         if (callback) runOnJS(callback)();
       })
