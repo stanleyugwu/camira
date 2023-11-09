@@ -9,11 +9,12 @@ import {
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import useLoadAppAssets from "~utils/useLoadAppAssets";
+import { ThemeProvider } from "@react-navigation/native";
 
 const spec: TransitionSpec = {
   animation: "timing",
   config: {
-    duration: 1200,
+    duration: 1000,
     easing(value) {
       return value === 1 ? 1 : 1 - Math.pow(2, -10 * value);
     },
@@ -60,16 +61,29 @@ const cardInterpolator: StackCardStyleInterpolator = ({
           translateY: multplyProgress([
             screen.height, // Focused, but offscreen in the beginning
             0, // Fully focused
-            screen.height / 1.5, // Fully unfocused
+            screen.height / 2, // Fully unfocused
           ]),
         },
       ],
       opacity: multplyProgress([0, 1, 0]),
     },
-    containerStyle: {
-      backgroundColor: ThemeColors.primary,
-    },
+    // WARNING: Don't set `backgroundColor` in cardContainerStyle.
   };
+};
+
+/**
+ * Theme for stack navigator
+ */
+const Theme = {
+  colors: {
+    background: ThemeColors.primary,
+    border: ThemeColors.lightGray,
+    card: ThemeColors.secondary,
+    primary: ThemeColors.primary,
+    notification: "red",
+    text: ThemeColors.black,
+  },
+  dark: false,
 };
 
 export default function Layout() {
@@ -77,11 +91,10 @@ export default function Layout() {
   if (!assets.ready) return null; // keep showing the splash screen
 
   return (
-    <>
+    <ThemeProvider value={Theme}>
       <StatusBar backgroundColor={ThemeColors.primary} style="inverted" />
       <CustomStack
         screenOptions={{
-          freezeOnBlur: true,
           gestureEnabled: true,
           headerShadowVisible: false,
           headerMode: "float",
@@ -105,6 +118,6 @@ export default function Layout() {
         />
         <CustomStack.Screen name="top-up/index" />
       </CustomStack>
-    </>
+    </ThemeProvider>
   );
 }
