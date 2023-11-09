@@ -65,8 +65,9 @@ const CustomHeader: (props: StackHeaderProps) => React.ReactNode = ({
   return (
     <View>
       {_canGoBack && (
-        <Animated.View style={[tw`p-6 bg-pink`, animatedBackStyle]}>
+        <Animated.View style={[tw`p-6`, animatedBackStyle]}>
           <Icon
+            suppressHighlighting
             name="arrow-back-ios"
             color={ThemeColors.black}
             onPress={goBack}
