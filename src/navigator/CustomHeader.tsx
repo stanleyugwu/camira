@@ -4,6 +4,8 @@ import { View, Animated } from "react-native";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 import ThemeColors from "~constants/theme";
 import { scale } from "react-native-size-matters";
+import tw from "~utils/tailwind";
+import Text from "~components/Text";
 
 /**
  * Custom generic Header component for navigator
@@ -58,10 +60,12 @@ const CustomHeader: (props: StackHeaderProps) => React.ReactNode = ({
     ],
   };
 
+  const _canGoBack = canGoBack();
+
   return (
-    <View style={{ padding: 24, backgroundColor: ThemeColors.primary }}>
-      {canGoBack() && (
-        <Animated.View style={[animatedBackStyle]}>
+    <View>
+      {_canGoBack && (
+        <Animated.View style={[tw`p-6 bg-pink`, animatedBackStyle]}>
           <Icon
             name="arrow-back-ios"
             color={ThemeColors.black}
@@ -70,9 +74,18 @@ const CustomHeader: (props: StackHeaderProps) => React.ReactNode = ({
           />
         </Animated.View>
       )}
-      <Animated.Text style={[animatedTitleStyle]}>
-        {headerTitle as string}
-      </Animated.Text>
+      {headerTitle && (
+        <Animated.View
+          style={[
+            tw.style(`pr-2 bg-blue-500`, _canGoBack ? "pl-6" : "p-6"),
+            animatedTitleStyle,
+          ]}
+        >
+          <Text type="heading" style={{ fontSize: 32 }}>
+            {headerTitle as string}
+          </Text>
+        </Animated.View>
+      )}
     </View>
   );
 };
