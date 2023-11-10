@@ -48,7 +48,7 @@ const config = {
         ".box-shadow":
           Platform.OS == "android"
             ? {
-                elevation: 30,
+                elevation: 2,
                 shadowColor: "#00000022",
               }
             : {
