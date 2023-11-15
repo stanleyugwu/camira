@@ -26,6 +26,7 @@ export type SquishyButtonProps = Animated.AnimateProps<
  */
 const SquishyButton = ({
   onPress,
+  disabled,
   style,
   ...otherProps
 }: SquishyButtonProps) => {
@@ -40,7 +41,7 @@ const SquishyButton = ({
    */
   const squish = (callback?: () => void) => {
     animatedValue.value = withSequence(
-      withSpring(1.1),
+      withSpring(1.07),
       withSpring(1, undefined, () => {
         if (callback) runOnJS(callback)();
       })
@@ -51,9 +52,9 @@ const SquishyButton = ({
     <AnimatedPressable
       key={"AnimatedSquishyPressable"}
       {...otherProps}
-      onTouchStart={() => squish()}
+      onTouchStart={() => !disabled && squish()}
       style={[animatedPressableStyle, style]}
-      onPress={() => squish(onPress)}
+      onPress={() => !disabled && squish(onPress)}
     />
   );
 };

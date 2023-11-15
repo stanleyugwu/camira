@@ -43,6 +43,7 @@ export default function Home() {
         }),
       ]).start();
     };
+    wave();
     const intervalId = setInterval(wave, 8000);
 
     return () => {
@@ -71,7 +72,7 @@ export default function Home() {
       <SquishyButton
         onPress={() => router.push("/settings/")}
         entering={EntranceAnimation.fromRight.build()}
-        style={tw`w-30 h-30 self-end`}
+        style={tw`w-35 h-35 self-end`}
       >
         <Icon name="ios-cog-sharp" size={scale(32)} color={ThemeColors.black} />
       </SquishyButton>
