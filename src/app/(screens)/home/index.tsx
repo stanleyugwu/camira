@@ -8,7 +8,6 @@ import ThemeColors from "~constants/theme";
 import handImg from "./assets/images/hand.png";
 import Text from "~components/Text";
 import RAnimated from "react-native-reanimated";
-import EntranceAnimation from "~utils/EntranceAnimation";
 import { useEffect, useMemo } from "react";
 import FeatureCard from "./components/FeatureCard";
 import TileImage from "./assets/images/tile.svg";
@@ -19,6 +18,7 @@ import ScanDocument from "./assets/images/scan-document.svg";
 import ScanQrCode from "./assets/images/scan-qrcode.svg";
 import GenerateQrCode from "./assets/images/generate-qrcode.svg";
 import SquishyButton from "~components/SquishyButton";
+import ANIMATIONS from "~constants/animation";
 
 const baseDelay = 300;
 
@@ -71,7 +71,7 @@ export default function Home() {
       {/* Settings Icon */}
       <SquishyButton
         onPress={() => router.push("/settings/")}
-        entering={EntranceAnimation.fromRight.build()}
+        entering={ANIMATIONS.Entrance.fromRight.build()}
         style={tw`w-35 h-35 self-end`}
       >
         <Icon name="ios-cog-sharp" size={scale(32)} color={ThemeColors.black} />
@@ -79,7 +79,7 @@ export default function Home() {
 
       {/* Welcome Text */}
       <View>
-        <RAnimated.View entering={EntranceAnimation.fromLeft.build()}>
+        <RAnimated.View entering={ANIMATIONS.Entrance.fromLeft.build()}>
           <View style={tw`flex-row items-center`}>
             <Animated.Image
               source={handImg}
@@ -90,7 +90,7 @@ export default function Home() {
             </Text>
           </View>
         </RAnimated.View>
-        <RAnimated.View entering={EntranceAnimation.fromRight.build()}>
+        <RAnimated.View entering={ANIMATIONS.Entrance.fromRight.build()}>
           <Text type="paragraph" color="gray" style={tw`-mt-3 ml-2`}>
             Through the Lens of Possibility
           </Text>

@@ -1,9 +1,8 @@
 //import libraries
 import React from "react";
-import { FadeInDown } from "react-native-reanimated";
 import SquishyButton from "~components/SquishyButton";
 import Text from "~components/Text";
-import EntranceAnimation from "~utils/EntranceAnimation";
+import ANIMATIONS from "~constants/animation";
 import tw from "~utils/tailwind";
 
 interface FeatureCardProps {
@@ -39,7 +38,7 @@ const FeatureCard = ({
 }: FeatureCardProps) => {
   return (
     <SquishyButton
-      entering={EntranceAnimation.fromDown.delay(delay).build()}
+      entering={ANIMATIONS.Entrance.fromDown.delay(delay).build()}
       style={tw`box-shadow justify-center items-center bg-secondary w-140 h-140 rounded-lg`}
       onPress={onPress}
     >
