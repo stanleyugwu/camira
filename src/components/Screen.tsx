@@ -9,7 +9,12 @@ export type ScreenProps = ScrollViewProps;
  */
 const Screen = (props: ScreenProps) => {
   return (
-    <ScrollView style={tw`p-6 flex-1 bg-primary`}>{props.children}</ScrollView>
+    <ScrollView
+      contentContainerStyle={{ height: "100%" }}
+      style={tw`p-6 flex-1 bg-primary`}
+    >
+      {props.children}
+    </ScrollView>
   );
 };
 

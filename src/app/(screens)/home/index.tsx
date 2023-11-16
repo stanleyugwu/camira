@@ -67,73 +67,79 @@ export default function Home() {
   }, []);
 
   return (
-    <Screen>
-      {/* Settings Icon */}
-      <SquishyButton
-        onPress={() => router.push("/settings/")}
-        entering={ANIMATIONS.Entrance.fromRight.build()}
-        style={tw`w-35 h-35 self-end`}
-      >
-        <Icon name="ios-cog-sharp" size={scale(32)} color={ThemeColors.black} />
-      </SquishyButton>
+    <>
+      <Screen>
+        {/* Settings Icon */}
+        <SquishyButton
+          onPress={() => router.push("/settings/")}
+          entering={ANIMATIONS.Entrance.fromRight.build()}
+          style={tw`w-35 h-35 self-end`}
+        >
+          <Icon
+            name="ios-cog-sharp"
+            size={scale(32)}
+            color={ThemeColors.black}
+          />
+        </SquishyButton>
 
-      {/* Welcome Text */}
-      <View>
-        <RAnimated.View entering={ANIMATIONS.Entrance.fromLeft.build()}>
-          <View style={tw`flex-row items-center`}>
-            <Animated.Image
-              source={handImg}
-              style={[tw`w-50 h-50`, animatedHandStyle]}
-            />
-            <Text type="heading" style={tw`mt-4`}>
-              Hello, Welcome
+        {/* Welcome Text */}
+        <View>
+          <RAnimated.View entering={ANIMATIONS.Entrance.fromLeft.build()}>
+            <View style={tw`flex-row items-center`}>
+              <Animated.Image
+                source={handImg}
+                style={[tw`w-50 h-50`, animatedHandStyle]}
+              />
+              <Text type="heading" style={tw`mt-4`}>
+                Hello, Welcome
+              </Text>
+            </View>
+          </RAnimated.View>
+          <RAnimated.View entering={ANIMATIONS.Entrance.fromRight.build()}>
+            <Text type="paragraph" color="gray" style={tw`-mt-3 ml-2`}>
+              Through the Lens of Possibility
             </Text>
+          </RAnimated.View>
+        </View>
+
+        {/* Cards container */}
+        <View style={tw`mt-20`}>
+          {/* First Row */}
+          <View style={tw`flex-row justify-between`}>
+            <FeatureCard
+              delay={baseDelay}
+              label="Top-Up Airtime"
+              onPress={() => router.push("/top-up/")}
+              featureImage={<TopUp />}
+            />
+            <FeatureCard
+              delay={baseDelay * 2.5}
+              label="Scan Document"
+              onPress={() => router.push("/scan-document/")}
+              featureImage={<ScanDocument />}
+            />
           </View>
-        </RAnimated.View>
-        <RAnimated.View entering={ANIMATIONS.Entrance.fromRight.build()}>
-          <Text type="paragraph" color="gray" style={tw`-mt-3 ml-2`}>
-            Through the Lens of Possibility
-          </Text>
-        </RAnimated.View>
-      </View>
 
-      {/* Cards container */}
-      <View style={tw`mt-20`}>
-        {/* First Row */}
-        <View style={tw`flex-row justify-between`}>
-          <FeatureCard
-            delay={baseDelay}
-            label="Top-Up Airtime"
-            onPress={() => router.push("/top-up/")}
-            featureImage={<TopUp />}
-          />
-          <FeatureCard
-            delay={baseDelay * 2.5}
-            label="Scan Document"
-            onPress={() => router.push("/scan-document/")}
-            featureImage={<ScanDocument />}
-          />
+          {/* Second Row */}
+          <View style={tw`flex-row justify-between mt-6`}>
+            <FeatureCard
+              delay={baseDelay * 3}
+              label="Scan QR Code or Image"
+              onPress={() => router.push("/scan-qrcode/")}
+              featureImage={<ScanQrCode />}
+            />
+            <FeatureCard
+              delay={baseDelay * 3.5}
+              label="Generate QR Code or Image"
+              onPress={() => router.push("/generate-qrcode/")}
+              featureImage={<GenerateQrCode />}
+            />
+          </View>
         </View>
-
-        {/* Second Row */}
-        <View style={tw`flex-row justify-between mt-6`}>
-          <FeatureCard
-            delay={baseDelay * 3}
-            label="Scan QR Code or Image"
-            onPress={() => router.push("/scan-qrcode/")}
-            featureImage={<ScanQrCode />}
-          />
-          <FeatureCard
-            delay={baseDelay * 3.5}
-            label="Generate QR Code or Image"
-            onPress={() => router.push("/generate-qrcode/")}
-            featureImage={<GenerateQrCode />}
-          />
-        </View>
-      </View>
-      <View style={[tw`absolute right-0 -bottom-30`, { zIndex: -1 }]}>
+      </Screen>
+      <View style={[tw`absolute right-0 -bottom-35`]}>
         <TileImage />
       </View>
-    </Screen>
+    </>
   );
 }
