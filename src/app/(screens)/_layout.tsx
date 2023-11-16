@@ -10,6 +10,7 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import useLoadAppAssets from "~utils/useLoadAppAssets";
 import { ThemeProvider } from "@react-navigation/native";
+import GlobalStateProvider from "~contexts/global-state/provider";
 
 const spec: TransitionSpec = {
   animation: "timing",
@@ -92,32 +93,44 @@ export default function Layout() {
 
   return (
     <ThemeProvider value={Theme}>
-      <StatusBar backgroundColor={ThemeColors.primary} style="inverted" />
-      <CustomStack
-        screenOptions={{
-          gestureEnabled: true,
-          headerShadowVisible: false,
-          headerMode: "float",
-          header: CustomHeader,
-          cardStyleInterpolator: cardInterpolator,
-          transitionSpec: {
-            open: spec,
-            close: spec,
-          },
-        }}
-      >
-        <CustomStack.Screen
-          name="(onboarding)/index"
-          options={{
-            headerShown: false,
+      <GlobalStateProvider>
+        <StatusBar
+          networkActivityIndicatorVisible
+          hideTransitionAnimation="slide"
+          animated
+          backgroundColor={ThemeColors.primary}
+          style="inverted"
+        />
+        <CustomStack
+          screenOptions={{
+            gestureEnabled: true,
+            headerShadowVisible: false,
+            headerMode: "float",
+            header: CustomHeader,
+            cardStyleInterpolator: cardInterpolator,
+            transitionSpec: {
+              open: spec,
+              close: spec,
+            },
           }}
-        />
-        <CustomStack.Screen
-          name="home/index"
-          options={{ headerShown: false }}
-        />
-        <CustomStack.Screen name="top-up/index" />
-      </CustomStack>
+        >
+          <CustomStack.Screen
+            name="(onboarding)/index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <CustomStack.Screen
+            name="settings/index"
+            options={{ headerMode: "screen" }}
+          />
+          <CustomStack.Screen
+            name="home/index"
+            options={{ headerShown: false }}
+          />
+          <CustomStack.Screen name="top-up/index" />
+        </CustomStack>
+      </GlobalStateProvider>
     </ThemeProvider>
   );
 }
