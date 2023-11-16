@@ -32,6 +32,13 @@ type DefaultButtonProps = SquishyButtonProps & {
    * Determines whether the button should show a loading indicator
    */
   loading?: boolean;
+
+   /**
+   * Custom loading text
+   *
+   * @default "Loading"
+   */
+   loadingText?: string;
 };
 
 type RectangleButtonProps = DefaultButtonProps & {
@@ -70,6 +77,11 @@ type SquareButtonProps = DefaultButtonProps & {
    * Name of the icon to display to the right of the button
    */
   iconName: keyof typeof Icon.glyphMap;
+
+   /**
+   * Square buttons doesn't support loading text
+   */
+  loadingText?:never
 };
 
 type ButtonProps = RectangleButtonProps | SquareButtonProps;
@@ -88,6 +100,7 @@ const Button = ({
   onPress,
   disabled,
   loading = false,
+  loadingText = "Loading",
   ...otherProps
 }: ButtonProps) => {
   const sharedStyle = tw.style(
@@ -167,7 +180,7 @@ const Button = ({
               disabled && "opacity-50"
             )}
           >
-            {loading ? "Loading" : label}
+            {loading ? loadingText : label}
           </Text>
           {loading ? (
             <LottieView
@@ -177,6 +190,7 @@ const Button = ({
               style={{
                 width: 15,
                 height: 15,
+                marginLeft: 2
               }}
               source={fill ? loader_white : loader}
             />
