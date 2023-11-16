@@ -18,6 +18,7 @@ module.exports = function (api) {
             "~hooks/*": ["./src/hooks/*"],
             "~navigator/*": ["./src/navigator/*"],
             "~navigator": ["./src/navigator"],
+            "~contexts/*": ["./src/contexts/*"],
             "~api/*": ["./src/api/*"],
             "~root/*": ["./*"],
           },

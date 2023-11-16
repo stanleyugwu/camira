@@ -1,46 +1,20 @@
 {
   "compilerOptions": {
     "paths": {
-      "~components/*": [
-        "./src/components/*"
-      ],
-      "~assets/*": [
-        "./src/assets/*"
-      ],
-      "~images/*": [
-        "./src/assets/images/*"
-      ],
-      "~screens/*": [
-        "./src/app/(screens)/*"
-      ],
-      "~utils/*": [
-        "./src/utils/*"
-      ],
-      "~constants/*": [
-        "./src/constants/*"
-      ],
-      "~hooks/*": [
-        "./src/hooks/*"
-      ],
-      "~navigator/*": [
-        "./src/navigator/*"
-      ],
-      "~navigator": [
-        "./src/navigator"
-      ],
-      "~api/*": [
-        "./src/api/*"
-      ],
-      "~root/*": [
-        "./*"
-      ]
+      "~components/*": ["./src/components/*"],
+      "~assets/*": ["./src/assets/*"],
+      "~images/*": ["./src/assets/images/*"],
+      "~screens/*": ["./src/app/(screens)/*"],
+      "~utils/*": ["./src/utils/*"],
+      "~constants/*": ["./src/constants/*"],
+      "~hooks/*": ["./src/hooks/*"],
+      "~navigator/*": ["./src/navigator/*"],
+      "~navigator": ["./src/navigator"],
+      "~contexts/*": ["./src/contexts/*"],
+      "~api/*": ["./src/api/*"],
+      "~root/*": ["./*"]
     }
   },
   "extends": "expo/tsconfig.base",
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
