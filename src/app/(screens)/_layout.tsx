@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import useLoadAppAssets from "~utils/useLoadAppAssets";
 import { ThemeProvider } from "@react-navigation/native";
 import GlobalStateProvider from "~contexts/global-state/provider";
+import CustomToastRoot from "~components/toast";
 
 const spec: TransitionSpec = {
   animation: "timing",
@@ -131,6 +132,7 @@ export default function Layout() {
           <CustomStack.Screen name="top-up/index" />
         </CustomStack>
       </GlobalStateProvider>
+      <CustomToastRoot/>
     </ThemeProvider>
   );
 }
