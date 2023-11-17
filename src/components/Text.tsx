@@ -45,6 +45,9 @@ const Text = ({
 }: TextProps) => {
   return (
     <_Text
+      // DONTTOUCH: Removing this breaks font sizing on some android devices
+      allowFontScaling={false}
+      
       style={[
         {
           fontFamily: "Muli",
