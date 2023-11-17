@@ -30,4 +30,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: "com.devvie.camira",
   },
+  extra: {
+    eas: {
+      projectId: "150c8639-91cb-40ae-a4df-f72143d28eed",
+    },
+  },
 });
