@@ -6,6 +6,7 @@
     "development": {
       "distribution": "internal",
       "developmentClient": true,
+      "node": "18.0.0",
       "android": {
         "gradleCommand": ":app:assembleDebug",
         "buildType": "apk"
