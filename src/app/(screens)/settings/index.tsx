@@ -14,6 +14,7 @@ import Button from "~components/button/index";
 import { StartUpScreens } from "~constants/startup_screen";
 import useStore from "~hooks/global_state";
 import ThemeColors from "~constants/theme";
+import Toast from "~utils/toast";
 
 enum Confirmation {
   Yes = "Yes",
@@ -41,7 +42,9 @@ export default function Settings() {
   const handleSaveCodePrefix = () => {
     setSavingcodePrefix(true);
     dispatch({ type: "SET_RECHARGE_PREFIX_CODE", payload: codePrefix });
+    Toast.show("success", "Changes saved");
     setSavingcodePrefix(false);
+    changePrefixCodeSheetRef.current?.close();
   };
 
   return (
