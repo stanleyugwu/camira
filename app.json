@@ -4,6 +4,9 @@
     "name": "Camira",
     "scheme": ["camira"],
     "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "com.devvie.camira"
+    },
     "backgroundColor": "#F0F0FF" /* ThemeColors.primary */,
     "androidNavigationBar": {
       "backgroundColor": "#F0F0FF" /* ThemeColors.primary */,
@@ -26,6 +29,18 @@
     "experiments": { "tsconfigPaths": true, "typedRoutes": true },
     "android": {
       "package": "com.devvie.camira"
-    }
+    },
+    "plugins": [
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
+
+          // optionally, if you want to record audio:
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
+        }
+      ]
+    ]
   }
 }

@@ -29,7 +29,7 @@
     "react-native-size-matters": "^0.4.2",
     "react-native-svg": "13.9.0",
     "react-native-toast-message": "^2.1.7",
-    "react-native-vision-camera": "^3.6.6",
+    "react-native-vision-camera": "^3.6.8",
     "react-native-web": "~0.19.6",
     "react-native-worklets-core": "^0.2.4",
     "twrnc": "^3.6.4",
