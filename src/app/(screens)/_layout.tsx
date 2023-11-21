@@ -1,4 +1,4 @@
-import { Animated } from "react-native";
+import { Animated, StatusBar } from "react-native";
 import ThemeColors from "~constants/theme";
 import { CustomStack } from "~navigator";
 import CustomHeader from "~navigator/CustomHeader";
@@ -6,8 +6,7 @@ import {
   StackCardStyleInterpolator,
   TransitionSpec,
 } from "@react-navigation/stack/lib/typescript/src/types";
-import React from "react";
-import { StatusBar } from "expo-status-bar";
+import React, { useEffect } from "react";
 import useLoadAppAssets from "~utils/useLoadAppAssets";
 import { ThemeProvider } from "@react-navigation/native";
 import GlobalStateProvider from "~contexts/global-state/provider";
@@ -89,19 +88,17 @@ const Theme = {
 };
 
 export default function Layout() {
+  useEffect(() => {
+    StatusBar.setBackgroundColor(ThemeColors.primary);
+    StatusBar.setBarStyle("dark-content");
+  }, []);
+
   const assets = useLoadAppAssets();
   if (!assets.ready) return null; // keep showing the splash screen
 
   return (
     <ThemeProvider value={Theme}>
       <GlobalStateProvider>
-        <StatusBar
-          networkActivityIndicatorVisible
-          hideTransitionAnimation="slide"
-          animated
-          backgroundColor={ThemeColors.primary}
-          style="inverted"
-        />
         <CustomStack
           screenOptions={{
             gestureEnabled: true,
@@ -129,10 +126,13 @@ export default function Layout() {
             name="home/index"
             options={{ headerShown: false }}
           />
-          <CustomStack.Screen name="top-up/index" />
+          <CustomStack.Screen
+            name="top-up/index"
+            options={{ freezeOnBlur: true, animationEnabled: false }}
+          />
         </CustomStack>
       </GlobalStateProvider>
-      <CustomToastRoot/>
+      <CustomToastRoot />
     </ThemeProvider>
   );
 }

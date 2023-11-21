@@ -19,6 +19,7 @@ import ScanQrCode from "./assets/images/scan-qrcode.svg";
 import GenerateQrCode from "./assets/images/generate-qrcode.svg";
 import SquishyButton from "~components/SquishyButton";
 import ANIMATIONS from "~constants/animation";
+import * as NavigationBar from 'expo-navigation-bar'
 
 const baseDelay = 300;
 

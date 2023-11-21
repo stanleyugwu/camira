@@ -11,6 +11,8 @@ import Text from "~components/Text";
 import loader from "./assets/loader.json";
 import loader_white from "./assets/loader-white.json";
 
+type IoniconName = keyof typeof Icon.glyphMap;
+
 type DefaultButtonProps = SquishyButtonProps & {
   /**
    * Determines whether button should have a fill/background color
@@ -33,12 +35,12 @@ type DefaultButtonProps = SquishyButtonProps & {
    */
   loading?: boolean;
 
-   /**
+  /**
    * Custom loading text
    *
    * @default "Loading"
    */
-   loadingText?: string;
+  loadingText?: string;
 };
 
 type RectangleButtonProps = DefaultButtonProps & {
@@ -59,7 +61,7 @@ type RectangleButtonProps = DefaultButtonProps & {
   /**
    * Name of the icon to display to the right of the button
    */
-  iconName?: keyof typeof Icon.glyphMap;
+  icon?: IoniconName;
 };
 
 type SquareButtonProps = DefaultButtonProps & {
@@ -74,14 +76,15 @@ type SquareButtonProps = DefaultButtonProps & {
   type: "square";
 
   /**
-   * Name of the icon to display to the right of the button
+   * Name of the icon to display inside the button, or a
+   * React element to render as the icon
    */
-  iconName: keyof typeof Icon.glyphMap;
+  icon: JSX.Element | IoniconName;
 
-   /**
+  /**
    * Square buttons doesn't support loading text
    */
-  loadingText?:never
+  loadingText?: never;
 };
 
 type ButtonProps = RectangleButtonProps | SquareButtonProps;
@@ -93,7 +96,7 @@ type ButtonProps = RectangleButtonProps | SquareButtonProps;
  * `Note:` It extends/compose from `SquishyButton` component
  */
 const Button = ({
-  iconName,
+  icon,
   label,
   fill = true,
   type = "big",
@@ -114,7 +117,6 @@ const Button = ({
         color: fill ? ThemeColors.secondary : ThemeColors.accent,
         borderless: false,
         foreground: true,
-        radius: 2,
       }}
       disabled={disabled || loading}
       onPress={onPress}
@@ -144,9 +146,11 @@ const Button = ({
               }}
               source={fill ? loader_white : loader}
             />
+          ) : typeof icon !== "string" && React.isValidElement(icon) ? (
+            <View style={tw`max-w-30 max-h-30`}>{icon}</View>
           ) : (
             <Icon
-              name={iconName || "link-outline"}
+              name={(icon || "link-outline") as IoniconName}
               size={scale(26)}
               style={{ opacity: disabled ? 0.5 : 1 }}
               color={
@@ -176,7 +180,7 @@ const Button = ({
             type={type === "big" ? "paragraph (bold)" : "label"}
             color={disabled ? "lightGray" : fill ? "secondary" : "accent"}
             style={tw.style(
-              iconName ? "text-start mr-1" : `text-center`,
+              icon ? "text-start mr-1" : `text-center`,
               disabled && "opacity-50"
             )}
           >
@@ -190,14 +194,14 @@ const Button = ({
               style={{
                 width: 15,
                 height: 15,
-                marginLeft: 2
+                marginLeft: 2,
               }}
               source={fill ? loader_white : loader}
             />
           ) : (
-            iconName && (
+            icon && (
               <Icon
-                name={iconName}
+                name={icon as IoniconName}
                 size={scale(type === "big" ? 22 : 20)}
                 color={
                   ThemeColors[
