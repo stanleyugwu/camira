@@ -103,7 +103,7 @@ const RenderItem = ({ index, item, sceneWidth, scrollX }: RenderItemProps) => {
       <View style={tw`items-center mx-6`}>
         <Animated.View style={[animatedTextStyle]}>
           <Text
-            type="heading"
+            type="subHeading"
             style={tw`text-center mb-3 text-[${item.titleColor}]`}
           >
             {item.title}

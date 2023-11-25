@@ -181,7 +181,8 @@ const Button = ({
             color={disabled ? "lightGray" : fill ? "secondary" : "accent"}
             style={tw.style(
               icon ? "text-start mr-1" : `text-center`,
-              disabled && "opacity-50"
+              disabled && "opacity-50",
+              { lineHeight: 30 }
             )}
           >
             {loading ? loadingText : label}
