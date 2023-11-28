@@ -16,7 +16,13 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "developmentClient": false,
+      "node": "18.0.0",
+      "android": {
+        "gradleCommand": ":app:assembleRelease",
+        "buildType": "apk"
+      }
     },
     "production": {}
   },
