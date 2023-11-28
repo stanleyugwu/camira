@@ -2,8 +2,8 @@
  * Maps routable screen names to displayable and storable
  * text for startup-screen setting
  *
- * The keys are valid screen names that can be routed to, while the values
- * are texts that can be shown to user, and stored as setting
+ * The keys are valid screen names that can be routed to, and used in the navigator,
+ * while the values are texts that can be shown to user, and stored as setting
  */
 export enum StartUpScreens {
   "home" = "Home",

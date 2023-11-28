@@ -25,7 +25,13 @@
     },
     "experiments": { "tsconfigPaths": true, "typedRoutes": true },
     "android": {
-      "package": "com.devvie.camira"
+      "package": "com.devvie.camira",
+      "permissions": ["android.permission.CALL_PHONE"]
+    },
+    "ios": {
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["tel", "telprompt"]
+      }
     }
   }
 }
