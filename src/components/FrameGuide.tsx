@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
+import { ViewStyle } from "react-native";
 import { LayoutChangeEvent, View } from "react-native";
 import Animated, {
   Easing,
@@ -57,7 +58,7 @@ const RightFrameGuide = ({ flip }: ChildFrameGuideProps) => (
 );
 
 export interface FrameGuideProps {
-  /** Whether frame guide scanning animation is active */
+  /** Determines whether frame guide `scanning` animation is currently running */
   animating?: boolean;
 
   /**
@@ -65,6 +66,9 @@ export interface FrameGuideProps {
    * `x` and `y` position of the center of Frame Guide view when it mounts
    */
   onLayout?: (pageX: number, pageY: number) => void;
+
+  /** Height of the frame guide in percentage or numbers */
+  height: ViewStyle["height"];
 }
 
 /**
@@ -72,7 +76,11 @@ export interface FrameGuideProps {
  * like this `[ ]`, typically above the camera to guide user's positioning
  *
  */
-const FrameGuide = ({ onLayout, animating = true }: FrameGuideProps) => {
+const FrameGuide = ({
+  onLayout,
+  animating = true,
+  height,
+}: FrameGuideProps) => {
   const animatedTranslateX = useSharedValue(
     20 /* (w-20) width of FrameGuide right&left */
   );
@@ -110,34 +118,45 @@ const FrameGuide = ({ onLayout, animating = true }: FrameGuideProps) => {
         true
       );
     } else {
-      console.log("STOP");
-
       cancelAnimation(animatedTranslateX);
     }
   }, [animating, maskWidth]);
 
   return (
     <View
-      onLayout={handleContainerLayout}
-      style={tw`w-full justify-center h-130 self-center mt-[60%] px-2`}
+      style={[
+        { pointerEvents: "none" },
+        tw`absolute top-0 bottom-0 right-0 left-0 justify-center px-6`,
+      ]}
     >
-      {/* Row 1 */}
-      <View style={tw`flex-row justify-between items-center mb-10`}>
-        <LeftFrameGuide />
-        <RightFrameGuide />
-      </View>
+      <View
+        onLayout={handleContainerLayout}
+        style={{ height, justifyContent: "space-between" }}
+      >
+        {/* Row 1 */}
+        <View style={tw`flex-row justify-between items-center`}>
+          <LeftFrameGuide />
+          <RightFrameGuide />
+        </View>
 
-      <Animated.View
-        style={[
-          animatedStyle,
-          tw`w-2 absolute h-100 self-start bg-accent opacity-80`,
-        ]}
-      />
+        {animating && (
+          <View
+            style={tw`h-full justify-center absolute top-0 bottom-0 right-0 left-0`}
+          >
+            <Animated.View
+              style={[
+                animatedStyle,
+                tw`w-2 h-[80%] self-start bg-accent opacity-80`,
+              ]}
+            />
+          </View>
+        )}
 
-      {/* Row 2 */}
-      <View style={tw`flex-row justify-between items-center mt-10`}>
-        <LeftFrameGuide flip />
-        <RightFrameGuide flip />
+        {/* Row 2 */}
+        <View style={tw`flex-row justify-between items-center`}>
+          <LeftFrameGuide flip />
+          <RightFrameGuide flip />
+        </View>
       </View>
     </View>
   );

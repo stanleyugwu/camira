@@ -1,18 +1,6 @@
-import {
-  Alert,
-  Dimensions,
-  GestureResponderEvent,
-  Linking,
-  PermissionsAndroid,
-  Platform,
-  StatusBar,
-  View,
-} from "react-native";
+import { GestureResponderEvent, View } from "react-native";
 import {
   Camera,
-  Templates,
-  runAsync,
-  runAtTargetFps,
   useCameraDevice,
   useCameraFormat,
   useCameraPermission,
@@ -20,7 +8,7 @@ import {
 } from "react-native-vision-camera";
 import tw from "~utils/tailwind";
 import { StyleSheet } from "react-native";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import CameraPermissionView from "~components/CameraPermissionView";
 import ThemeColors from "~constants/theme";
@@ -29,25 +17,21 @@ import { scale } from "react-native-size-matters";
 import FrameGuide, { FrameGuideProps } from "~components/FrameGuide";
 import Button from "~components/button";
 import CameraUnavailable from "~components/CameraUnavailable";
-import { useIsFocused } from "@react-navigation/native";
-import * as NavigationBar from "expo-navigation-bar";
 import PositonGuide from "./components/PositionGuide";
 import { scanOCR } from "@ismaelmoreiraa/vision-camera-ocr";
 import RECHARGE_PIN_REGEX from "~constants/pin_regex";
-import useAppIsFocused from "~utils/useAppIsFocused";
 import useGlobalState from "~hooks/global_state/useGlobalState";
 import { BottomSheetMethods } from "@devvie/bottom-sheet";
 import { Worklets } from "react-native-worklets-core";
 import SinglePinConfirmSheet from "./components/SinglePinConfirmSheet";
 import MultiPinConfirmSheet from "./components/multi_pin_confirm_sheet";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
-import Constants from "expo-constants";
-
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("screen");
+import useAndroidCallPermission from "./hooks/useAndroidCallPermission";
+import useHandleBars from "~hooks/useHandleBars";
+import useCameraState from "~hooks/useCameraState";
 
 /** Scan top up screen */
 export default function TopUp() {
-  const navigator = useNavigation();
   const {
     settings: { rechargePrefixCode, askForCodeConfirmation },
   } = useGlobalState();
@@ -59,7 +43,6 @@ export default function TopUp() {
   const { hasPermission: hasCameraPermission, requestPermission } =
     useCameraPermission();
   const camera = useRef<Camera>();
-  const [cameraIsActive, setCameraIsActive] = useState(true);
   const [cameraInitialized, setCameraInitialized] = useState(false);
   const [cameraTorch, setCameraTorch] = useState<"off" | "on">("off");
   const cameraDevice = useCameraDevice("back");
@@ -67,74 +50,14 @@ export default function TopUp() {
     { fps: 3, videoResolution: { width: 480, height: 640 } },
   ]);
   const cameraHasTorch = cameraDevice?.hasTorch;
-
-  // monitor app state
-  const screenIsFocused = useIsFocused();
-  const appIsFocused = useAppIsFocused();
-  const isActive = screenIsFocused && appIsFocused && cameraIsActive;
-
-  // takes care of hiding navigator back button, navigation bar
-  // and status bas as soon as camera permission is granted
-  useEffect(() => {
-    if (hasCameraPermission && cameraDevice.id) {
-      navigator.setOptions({ headerShown: false });
-      StatusBar.setHidden(true, "slide");
-      try {
-        NavigationBar.setVisibilityAsync("hidden");
-        NavigationBar.setBehaviorAsync("inset-swipe");
-      } catch (error) {
-        console.log("Couldn't set navigation bar color");
-      }
-    }
-
-    return () => {
-      StatusBar.setHidden(false, "slide");
-      StatusBar.setBackgroundColor(ThemeColors.primary, true);
-      try {
-        NavigationBar.setVisibilityAsync("visible");
-      } catch (error) {}
-    };
-  }, [hasCameraPermission, cameraDevice.id]);
+  const [screenFocused, cameraPaused, setCameraPaused] = useCameraState();
+  useHandleBars(hasCameraPermission, cameraDevice.id);
+  useAndroidCallPermission(hasCameraPermission);
 
   // turns off camera torch when camera becomes inactive
   useEffect(() => {
-    !cameraIsActive && setCameraTorch("off");
-  }, [cameraIsActive]);
-
-  // handles call permission for android
-  useEffect(() => {
-    if (hasCameraPermission && Platform.OS === "android") {
-      const appName = Constants.expoConfig.name;
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CALL_PHONE, {
-        title: `Grant ${appName} Call Permission`,
-        message: `Call permission is needed to enable scan-top up feature. If you deny this permission, this feature won't work`,
-        buttonPositive: "GRANT PERMISSION",
-        buttonNegative: "DENY",
-      })
-        .then((value) => {
-          console.log(value);
-          if (value === "never_ask_again") {
-            Alert.alert(
-              `Grant ${appName} Call Permission`,
-              `You need to grant ${appName} call permission for this feature to work`,
-              [
-                { style: "destructive", text: "IGNORE", isPreferred: false },
-                {
-                  text: "GRANT PERMISSION",
-                  style: "default",
-                  isPreferred: true,
-                  onPress(_) {
-                    Linking.openSettings();
-                  },
-                },
-              ],
-              { cancelable: false }
-            );
-          }
-        })
-        .catch(console.warn);
-    }
-  }, [hasCameraPermission]);
+    !screenFocused && setCameraTorch("off");
+  }, [screenFocused]);
 
   /** Processes the OCR-extracted text to extract possible recharge pins*/
   const processText = Worklets.createRunInJsFn((text: string) => {
@@ -147,13 +70,13 @@ export default function TopUp() {
       // console.log("PINS", detectedPins);
       if (askForCodeConfirmation) {
         setDetectedPins(detectedPins);
-        setCameraIsActive(false);
+        setCameraPaused(true);
         confirmationSheetRef.current?.open();
       } else {
         // if confirm sheet is disabled, we dial the first match
         // which will be the longest detected pin
         const firstMatch = detectedPins[0];
-        setCameraIsActive(false);
+        setCameraPaused(true);
         handleConfirmPin(firstMatch);
       }
     }
@@ -162,19 +85,11 @@ export default function TopUp() {
   const ocrProcessor = useFrameProcessor(
     (frame) => {
       "worklet";
-      const dt = Date.now();
-      const result = scanOCR(frame).result;
-      const dt2 = Date.now() - dt;
-      console.log(dt2);
-
+      const result = scanOCR(frame)?.result;
       processText(result.text);
     },
     [processText]
   );
-
-  // !cameraIsActive && confirmationSheetRef.current?.open();
-  // !detectedPins.length && setDetectedPins(["1111-1111-1111-11111"]);
-  // cameraIsActive && setCameraIsActive(false);
 
   /** Focuses the camera to the x and y position of the frame guide */
   const setCameraFocus = useCallback<FrameGuideProps["onLayout"]>(
@@ -209,62 +124,75 @@ export default function TopUp() {
 
   /** Handles rescanning pin */
   const handleScanAgain = () => {
-    setCameraIsActive(true);
+    setCameraPaused(false);
     confirmationSheetRef.current?.close();
   };
 
   /** Called when confirm sheet is closed */
   const handleConfirmSheetClose = () => {
-    setCameraIsActive(true);
+    setCameraPaused(false);
   };
 
   return (
     <View style={{ flex: 1 }} onTouchStart={handleTouchFocus}>
-      <Camera
-        ref={camera}
-        pixelFormat="yuv"
-        orientation="portrait"
-        onInitialized={() => setCameraInitialized(true)}
-        lowLightBoost={cameraDevice.supportsLowLightBoost}
-        fps={format.maxFps || 3}
-        enableBufferCompression
-        frameProcessor={ocrProcessor}
-        zoom={cameraDevice.neutralZoom}
-        photo={false}
-        video={false}
-        torch={cameraTorch}
-        device={cameraDevice}
-        isActive={isActive}
-        style={StyleSheet.absoluteFill}
-      />
+      {/* DONTTOUCH: Removing this conditional mounting will freeze camera 
+      on other screens, regardless of the value of `isActive` prop 
+      */}
+      {screenFocused && cameraDevice && (
+        <Camera
+          audio={false}
+          ref={camera}
+          pixelFormat="yuv"
+          orientation="portrait"
+          onInitialized={() => setCameraInitialized(true)}
+          lowLightBoost={cameraDevice.supportsLowLightBoost}
+          fps={format.maxFps || 3}
+          enableBufferCompression
+          frameProcessor={ocrProcessor}
+          zoom={cameraDevice.neutralZoom}
+          photo={false}
+          video={false}
+          torch={cameraTorch}
+          device={cameraDevice}
+          isActive={!cameraPaused}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       {/* Camera Overlay */}
       <View style={tw`p-6 bg-transparent flex-1`}>
-        <Icon
-          color={ThemeColors.secondary}
-          name="home"
-          size={scale(23)}
-          style={tw`self-end`}
-          onPress={() => {
-            router.push("/home/");
-          }}
-        />
-        <FrameGuide animating={cameraIsActive} onLayout={setCameraFocus} />
         <PositonGuide />
         <View style={tw`flex-1 justify-end pb-6`}>
-          <Button
-            style={tw`self-center`}
-            onPress={() =>
-              setCameraTorch((cameraTorch) =>
-                cameraTorch === "off" && cameraHasTorch ? "on" : "off"
-              )
-            }
-            type="square"
-            loading={dialingCode}
-            fill={false}
-            icon={cameraTorch === "off" ? "ios-flash" : "ios-flash-off"}
+          {cameraDevice?.hasTorch && (
+            <Button
+              style={tw`self-center`}
+              onPress={() =>
+                setCameraTorch((cameraTorch) =>
+                  cameraTorch === "off" && cameraHasTorch ? "on" : "off"
+                )
+              }
+              type="square"
+              loading={dialingCode}
+              fill={false}
+              icon={cameraTorch === "off" ? "ios-flash" : "ios-flash-off"}
+            />
+          )}
+          <Icon
+            color={ThemeColors.secondary}
+            name="home"
+            size={scale(23)}
+            style={tw`self-end`}
+            onPress={() => {
+              router.push("/home/");
+            }}
           />
         </View>
       </View>
+
+      <FrameGuide
+        height={"15%"}
+        animating={!cameraPaused}
+        onLayout={setCameraFocus}
+      />
 
       {/* Pin confirmation bottom sheet */}
       {detectedPins?.length > 1 ? (
