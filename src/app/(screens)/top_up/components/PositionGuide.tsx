@@ -29,7 +29,7 @@ const PositonGuide = () => {
         >
           <Text color="primary" type="label" style={tw`text-center`}>
             Point your camera to your recharge card(s) for auto top-up, and try
-            to position the card within the position guide above.
+            to position the card within the position guide below.
           </Text>
         </MotiView>
       )}
