@@ -109,13 +109,13 @@ export default function Home() {
             <FeatureCard
               delay={baseDelay}
               label="Top-Up Airtime"
-              onPress={() => router.push("/top-up/")}
+              onPress={() => router.push("/top_up/")}
               featureImage={<TopUp />}
             />
             <FeatureCard
               delay={baseDelay * 2.5}
               label="Scan Document"
-              onPress={() => router.push("/scan-document/")}
+              onPress={() => router.push("/scan_document/")}
               featureImage={<ScanDocument />}
             />
           </View>
@@ -125,13 +125,13 @@ export default function Home() {
             <FeatureCard
               delay={baseDelay * 3}
               label="Scan QR Code or Image"
-              onPress={() => router.push("/scan-qrcode/")}
+              onPress={() => router.push("/scan_qrcode/")}
               featureImage={<ScanQrCode />}
             />
             <FeatureCard
               delay={baseDelay * 3.5}
               label="Generate QR Code or Image"
-              onPress={() => router.push("/generate-qrcode/")}
+              onPress={() => router.push("/generate_qrcode/")}
               featureImage={<GenerateQrCode />}
             />
           </View>
