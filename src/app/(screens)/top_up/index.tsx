@@ -29,6 +29,7 @@ import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 import useAndroidCallPermission from "./hooks/useAndroidCallPermission";
 import useHandleBars from "~hooks/useHandleBars";
 import useCameraState from "~hooks/useCameraState";
+import useHandleAndroidBackButton from "~hooks/useHandleAndroidBackButton";
 
 /** Scan top up screen */
 export default function TopUp() {
@@ -47,12 +48,13 @@ export default function TopUp() {
   const [cameraTorch, setCameraTorch] = useState<"off" | "on">("off");
   const cameraDevice = useCameraDevice("back");
   const format = useCameraFormat(cameraDevice, [
-    { fps: 3, videoResolution: { width: 480, height: 640 } },
+    { fps: 1, videoResolution: { width: 480, height: 640 } },
   ]);
   const cameraHasTorch = cameraDevice?.hasTorch;
   const [screenFocused, cameraPaused, setCameraPaused] = useCameraState();
   useHandleBars(hasCameraPermission, cameraDevice.id);
   useAndroidCallPermission(hasCameraPermission);
+  useHandleAndroidBackButton("/home/");
 
   // turns off camera torch when camera becomes inactive
   useEffect(() => {
@@ -146,7 +148,7 @@ export default function TopUp() {
           orientation="portrait"
           onInitialized={() => setCameraInitialized(true)}
           lowLightBoost={cameraDevice.supportsLowLightBoost}
-          fps={format.maxFps || 3}
+          fps={format.maxFps || 1}
           enableBufferCompression
           frameProcessor={ocrProcessor}
           zoom={cameraDevice.neutralZoom}
