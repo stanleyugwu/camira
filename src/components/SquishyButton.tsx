@@ -18,6 +18,13 @@ export type SquishyButtonProps = Animated.AnimateProps<
    * Function to be called when button is pressed and after the squish animation
    */
   onPress: () => void;
+  
+  /**
+   * Determines whether the __squish__ interaction animation is enabled.\
+   * When `true`, the button will squish / scale up when pressed
+   * @default true
+   */
+  enableSquishAnimation?: boolean;
   key?: string;
 };
 
@@ -27,6 +34,7 @@ export type SquishyButtonProps = Animated.AnimateProps<
 const SquishyButton = ({
   onPress,
   disabled,
+  enableSquishAnimation = true,
   style,
   ...otherProps
 }: SquishyButtonProps) => {
@@ -52,9 +60,13 @@ const SquishyButton = ({
     <AnimatedPressable
       key={"AnimatedSquishyPressable"}
       {...otherProps}
-      onTouchStart={() => !disabled && squish()}
+      onTouchStart={() => !disabled && enableSquishAnimation && squish()}
       style={[animatedPressableStyle, style]}
-      onPress={() => !disabled && squish(onPress)}
+      onPress={() => {
+        if (!disabled) {
+          enableSquishAnimation ? squish(onPress) : onPress();
+        }
+      }}
     />
   );
 };
