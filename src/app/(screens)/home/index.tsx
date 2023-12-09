@@ -57,8 +57,15 @@ export default function Home() {
       transform: [
         {
           rotate: animatedValue.interpolate({
-            inputRange: [0, 0.1, 0.7, 1],
-            outputRange: ["0deg", "-30deg", "60deg", "0deg"],
+            inputRange: [0, 0.1, 0.7, 0.9, 1],
+            outputRange: ["0deg", "-30deg", "60deg", "30deg", "0deg"],
+            extrapolate: "extend",
+          }),
+        },
+        {
+          translateY: animatedValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, -10],
             extrapolate: "extend",
           }),
         },
