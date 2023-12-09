@@ -8,7 +8,7 @@ import { scale } from "react-native-size-matters";
 import LottieView from "lottie-react-native";
 import SquishyButton, { SquishyButtonProps } from "~components/SquishyButton";
 import Text from "~components/Text";
-import loader from "./assets/loader.json";
+import loader from "~assets/json/loader.json";
 import loader_white from "./assets/loader-white.json";
 
 type IoniconName = keyof typeof Icon.glyphMap;
@@ -180,7 +180,7 @@ const Button = ({
             type={type === "big" ? "paragraph (bold)" : "label"}
             color={disabled ? "lightGray" : fill ? "secondary" : "accent"}
             style={tw.style(
-              icon ? "text-start mr-1" : `text-center`,
+              icon ? "mr-1" : `text-center`,
               disabled && "opacity-50",
               { lineHeight: 30 }
             )}
