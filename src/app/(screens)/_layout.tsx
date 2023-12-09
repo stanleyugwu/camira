@@ -131,7 +131,7 @@ const StackScreens = ({ startupScreenName }: StackScreensProps) => {
         options={{
           headerShown: false,
         }}
-      />s
+      />
       <CustomStack.Screen name="home/index" options={{ headerShown: false }} />
       <CustomStack.Screen
         name="settings/index"
@@ -139,6 +139,14 @@ const StackScreens = ({ startupScreenName }: StackScreensProps) => {
       />
       <CustomStack.Screen
         name="top_up/index"
+        options={{
+          freezeOnBlur: false,
+          animationEnabled: false,
+          gestureEnabled: false,
+        }}
+      />
+      <CustomStack.Screen
+        name="scan_document/index"
         options={{
           freezeOnBlur: false,
           animationEnabled: false,
