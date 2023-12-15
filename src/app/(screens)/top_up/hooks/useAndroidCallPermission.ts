@@ -21,7 +21,7 @@ const useAndroidCallPermission: UseAndroidCallPermission = (
       const appName = Constants.expoConfig.name;
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CALL_PHONE, {
         title: `Grant ${appName} Call Permission`,
-        message: `Call permission is needed to enable scan-top up feature. If you deny this permission, this feature won't work`,
+        message: `You need to grant ${appName} CALL permission for this feature to work`,
         buttonPositive: "GRANT PERMISSION",
         buttonNegative: "DENY",
       })
