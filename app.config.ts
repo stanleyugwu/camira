@@ -7,7 +7,8 @@ export default ({ config }: ConfigContext): Partial<ExpoConfig> => ({
     [
       "react-native-vision-camera",
       {
-        cameraPermissionText: "$(PRODUCT_NAME) needs access to your Camera.",
+        cameraPermissionText:
+          "$(PRODUCT_NAME) needs access to your camera, to enable scanning features",
       },
     ],
   ],
