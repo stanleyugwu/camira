@@ -104,7 +104,7 @@ interface StackScreensProps {
 const StackScreens = ({ startupScreenName }: StackScreensProps) => {
   // handles auto-routing to user-set startup screen
   useLayoutEffect(() => {
-    if (startupScreenName !== null) {
+    if (startupScreenName != null) {
       // change globally-stored `Home` to routable 'home/index'
       const startScreen = getStartupScreenKeyFromValue(startupScreenName);
       // @ts-expect-error
