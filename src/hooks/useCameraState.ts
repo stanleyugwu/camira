@@ -1,6 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
-import useAppIsFocused from "~utils/useAppIsFocused";
+import useAppIsFocused from "~hooks/useAppIsFocused";
 type ReturnType = [
   screenFocused: boolean,
   cameraPaused: boolean,

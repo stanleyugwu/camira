@@ -7,7 +7,7 @@ import {
   TransitionSpec,
 } from "@react-navigation/stack/lib/typescript/src/types";
 import React, { useEffect, useLayoutEffect } from "react";
-import useLoadAppAssets from "~utils/useLoadAppAssets";
+import useLoadAppAssets from "~hooks/useLoadAppAssets";
 import { ThemeProvider } from "@react-navigation/native";
 import GlobalStateProvider from "~contexts/global-state/provider";
 import CustomToastRoot from "~components/toast";
