@@ -55,7 +55,6 @@ export default function Onboarding() {
       router.replace("/home/");
     }
     else
-    // @ts-expect-error
       listRef.current?.scrollToIndex({
         index: currentListIndex + 1,
         animated: true,
@@ -68,6 +67,7 @@ export default function Onboarding() {
         style={{ flex: 0.7 }}
         data={ONBOARDING_SCENES}
         onScroll={handleScroll}
+        // @ts-expect-error
         ref={listRef}
         horizontal
         showsHorizontalScrollIndicator={false}

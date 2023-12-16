@@ -107,7 +107,6 @@ const StackScreens = ({ startupScreenName }: StackScreensProps) => {
     if (startupScreenName != null) {
       // change globally-stored `Home` to routable 'home/index'
       const startScreen = getStartupScreenKeyFromValue(startupScreenName);
-      // @ts-expect-error
       typeof startScreen === "string" && router.push(`/${startScreen}/`);
     }
   }, []);

@@ -31,22 +31,6 @@ const ONBOARDING_SCENES: Scene[] = [
     paragraph:
       "Capture the future. Our document scanner transforms papers into digital brilliance. Scan, organize, and free your world from the tyranny of paperwork!",
   },
-  {
-    id: "3",
-    featureImg: require("./images/qrcode1.png"),
-    title: "Unlock the QRmagic",
-    titleColor: "#6784E5",
-    paragraph:
-      "Point, scan, and unlock hidden treasures, exclusive access, and more with our QR code & image scanner!",
-  },
-  {
-    id: "4",
-    featureImg: require("./images/qrcode2.png"),
-    title: "Create Your QR Story",
-    titleColor: "#1D1F60",
-    paragraph:
-      "Be the author of your data. Craft QR codes for anything you desire - contact info, secrets, surprises, or even images! Share your story in a scan!",
-  },
 ];
 
 export default ONBOARDING_SCENES;

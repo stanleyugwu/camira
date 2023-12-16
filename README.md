@@ -5,5 +5,3 @@ Camira is a versatile platform that unlocks new possibilities for users by harne
 - Carrier network top-up (no more manually entering recharge card codes)
 - Document Scanning (OCR)
 - Language Translation for Scanned Document
-- QR Code Generation
-- QR Code scanning

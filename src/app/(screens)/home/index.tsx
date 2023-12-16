@@ -15,8 +15,6 @@ import TileImage from "./assets/images/tile.svg";
 // images for features
 import TopUp from "./assets/images/scan-top-up.svg";
 import ScanDocument from "./assets/images/scan-document.svg";
-import ScanQrCode from "./assets/images/scan-qrcode.svg";
-import GenerateQrCode from "./assets/images/generate-qrcode.svg";
 import SquishyButton from "~components/SquishyButton";
 import ANIMATIONS from "~constants/animation";
 
@@ -124,22 +122,6 @@ export default function Home() {
               label="Scan Document"
               onPress={() => router.push("/scan_document/")}
               featureImage={<ScanDocument />}
-            />
-          </View>
-
-          {/* Second Row */}
-          <View style={tw`flex-row justify-between mt-6`}>
-            <FeatureCard
-              delay={baseDelay * 3}
-              label="Scan QR Code or Image"
-              onPress={() => router.push("/scan_qrcode/")}
-              featureImage={<ScanQrCode />}
-            />
-            <FeatureCard
-              delay={baseDelay * 3.5}
-              label="Generate QR Code or Image"
-              onPress={() => router.push("/generate_qrcode/")}
-              featureImage={<GenerateQrCode />}
             />
           </View>
         </View>

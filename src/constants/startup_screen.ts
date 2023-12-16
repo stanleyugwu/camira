@@ -10,8 +10,6 @@ export enum StartUpScreens {
   "home" = "Home",
   "top_up" = "Airtime Top-Up",
   "scan_document" = "Scan Document",
-  "scan_qrcode" = "Scan QR Code or Image",
-  "generate_qrcode" = "Generate QR Code or Image",
 }
 
 /**
