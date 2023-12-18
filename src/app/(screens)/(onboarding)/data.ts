@@ -31,6 +31,14 @@ const ONBOARDING_SCENES: Scene[] = [
     paragraph:
       "Capture the future. Our document scanner transforms papers into digital brilliance. Scan, organize, and free your world from the tyranny of paperwork!",
   },
+  {
+    id: "3",
+    featureImg: require("./images/camera-vision.png"),
+    title: "Amplify your Camera's\nVision",
+    titleColor: "#8D1D80",
+    paragraph:
+      "Solve your camera-related needs with new and enhanced computer-visioning capabilities effortlessly, and in one place.",
+  },
 ];
 
 export default ONBOARDING_SCENES;
