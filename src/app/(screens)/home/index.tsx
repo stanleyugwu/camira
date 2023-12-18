@@ -2,9 +2,6 @@ import { useRouter } from "expo-router";
 import { Animated, View, useAnimatedValue } from "react-native";
 import Screen from "~components/Screen";
 import tw from "~utils/tailwind";
-import Icon from "@expo/vector-icons/Ionicons";
-import { scale } from "react-native-size-matters";
-import ThemeColors from "~constants/theme";
 import handImg from "./assets/images/hand.png";
 import Text from "~components/Text";
 import RAnimated from "react-native-reanimated";
@@ -15,6 +12,9 @@ import TileImage from "./assets/images/tile.svg";
 // images for features
 import TopUp from "./assets/images/scan-top-up.svg";
 import ScanDocument from "./assets/images/scan-document.svg";
+import SavedDocuments from "./assets/images/saved-documents.svg";
+import SettingsIcon from './assets/images/settings.svg'
+
 import SquishyButton from "~components/SquishyButton";
 import ANIMATIONS from "~constants/animation";
 
@@ -78,13 +78,9 @@ export default function Home() {
         <SquishyButton
           onPress={() => router.push("/settings/")}
           entering={ANIMATIONS.Entrance.fromRight.build()}
-          style={tw`w-35 h-35 self-end`}
+          style={tw`w-30 h-30 self-end`}
         >
-          <Icon
-            name="ios-cog-sharp"
-            size={scale(32)}
-            color={ThemeColors.black}
-          />
+          <SettingsIcon/>
         </SquishyButton>
 
         {/* Welcome Text */}
@@ -101,29 +97,36 @@ export default function Home() {
             </View>
           </RAnimated.View>
           <RAnimated.View entering={ANIMATIONS.Entrance.fromRight.build()}>
-            <Text type="paragraph" color="gray" style={tw`-mt-3 ml-2`}>
+            <Text type="paragraph" color="gray" style={tw`ml-2`}>
               Through the Lens of Possibility
             </Text>
           </RAnimated.View>
         </View>
 
         {/* Cards container */}
-        <View style={tw`mt-20`}>
-          {/* First Row */}
-          <View style={tw`flex-row justify-between`}>
-            <FeatureCard
-              delay={baseDelay}
-              label="Top-Up Airtime"
-              onPress={() => router.push("/top_up/")}
-              featureImage={<TopUp />}
-            />
-            <FeatureCard
-              delay={baseDelay * 2.5}
-              label="Scan Document"
-              onPress={() => router.push("/scan_document/")}
-              featureImage={<ScanDocument />}
-            />
-          </View>
+        {/* First Row */}
+        <View style={tw`justify-center items-center max-w-300 mt-10`}>
+          <FeatureCard
+            delay={baseDelay}
+            label="Top-Up Airtime"
+            description="Top-up airtime by snapping instead of typing. Reload in a snap!"
+            onPress={() => router.push("/top_up/")}
+            featureImage={<TopUp />}
+          />
+          <FeatureCard
+            delay={baseDelay * 2}
+            label="Scan Document"
+            description="Transform physical documents into digital texts in a snap!"
+            onPress={() => router.push("/scan_document/")}
+            featureImage={<ScanDocument />}
+          />
+          <FeatureCard
+            delay={baseDelay * 3}
+            label="Saved Documents"
+            description="View all your saved documents"
+            onPress={() => router.push("/saved_documents/")}
+            featureImage={<SavedDocuments />}
+          />
         </View>
       </Screen>
       <View style={[tw`absolute right-0 -bottom-35`]}>

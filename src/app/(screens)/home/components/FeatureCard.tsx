@@ -1,5 +1,6 @@
 //import libraries
 import React from "react";
+import { View } from "react-native";
 import SquishyButton from "~components/SquishyButton";
 import Text from "~components/Text";
 import ANIMATIONS from "~constants/animation";
@@ -15,6 +16,11 @@ interface FeatureCardProps {
    * Text label of the feature
    */
   label: string;
+
+  /**
+   * Text description of the feature
+   */
+  description: string;
 
   /**
    * Called when the card is pressed
@@ -34,18 +40,22 @@ const FeatureCard = ({
   featureImage: FeatureImage,
   label,
   onPress,
+  description,
   delay = 300,
 }: FeatureCardProps) => {
   return (
     <SquishyButton
       entering={ANIMATIONS.Entrance.fromDown.delay(delay).build()}
-      style={tw`box-shadow justify-center items-center bg-secondary w-140 h-140 rounded-lg`}
+      style={tw`box-shadow flex-row justify-between items-center bg-secondary w-full h-100 rounded-lg my-2 px-4`}
       onPress={onPress}
     >
       {FeatureImage}
-      <Text type="label" style={tw`mt-4 mx-4 text-center`}>
-        {label}
-      </Text>
+      <View style={tw`flex-1 ml-4`}>
+        <Text type="label" color="gray">
+          {label}
+        </Text>
+        <Text type="label (small)" color="lightGray">{description}</Text>
+      </View>
     </SquishyButton>
   );
 };
