@@ -34,6 +34,7 @@
     "react-native-vision-camera": "^3.6.6",
     "react-native-web": "~0.19.6",
     "react-native-worklets-core": "^0.2.4",
+    "rn-direct-phone-call": "^0.1.2",
     "twrnc": "^3.6.4",
     "typescript": "^5.1.3"
   },

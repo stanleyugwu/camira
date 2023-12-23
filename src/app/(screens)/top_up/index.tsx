@@ -1,4 +1,4 @@
-import { GestureResponderEvent, View } from "react-native";
+import { GestureResponderEvent, Platform, View } from "react-native";
 import {
   Camera,
   useCameraDevice,
@@ -25,11 +25,12 @@ import { BottomSheetMethods } from "@devvie/bottom-sheet";
 import { Worklets } from "react-native-worklets-core";
 import SinglePinConfirmSheet from "./components/SinglePinConfirmSheet";
 import MultiPinConfirmSheet from "./components/multi_pin_confirm_sheet";
-import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 import useAndroidCallPermission from "./hooks/useAndroidCallPermission";
 import useHandleBars from "~hooks/useHandleBars";
 import useCameraState from "~hooks/useCameraState";
 import useHandleAndroidBackButton from "~hooks/useHandleAndroidBackButton";
+import SimSelector from "./components/sim_selector";
+import { andCall, iosCall } from "rn-direct-phone-call";
 
 /** Scan top up screen */
 export default function TopUp() {
@@ -40,6 +41,7 @@ export default function TopUp() {
   const confirmationSheetRef = useRef<BottomSheetMethods>();
   const [detectedPins, setDetectedPins] = useState<string[]>([]);
   const [dialingCode, setDialingCode] = useState(false);
+  const [topUpSim, setTopUpSim] = useState(0); // sim to dial with, 0 = sim 1, 1 = sim 2
 
   const { hasPermission: hasCameraPermission, requestPermission } =
     useCameraPermission();
@@ -65,7 +67,6 @@ export default function TopUp() {
   const processText = Worklets.createRunInJsFn((text: string) => {
     // save us some computing power if text is not up to 5 characters
     if (!text || text.trim()?.length < 6) return;
-    // console.log(text);
 
     const detectedPins = text.match(RECHARGE_PIN_REGEX);
     if (detectedPins?.length) {
@@ -80,6 +81,7 @@ export default function TopUp() {
         const firstMatch = detectedPins[0];
         setCameraPaused(true);
         handleConfirmPin(firstMatch);
+        setCameraPaused(false);
       }
     }
   });
@@ -88,7 +90,7 @@ export default function TopUp() {
     (frame) => {
       "worklet";
       const result = scanOCR(frame)?.result;
-      processText(result.text);
+      processText(result?.text);
     },
     [processText]
   );
@@ -120,8 +122,8 @@ export default function TopUp() {
     pin = pin?.replace(/\D/gi, ""); // remove all non-digit
     const code = `${rechargePrefixCode}${pin}#`;
     console.log("FINAL PIN:", code);
-    RNImmediatePhoneCall.immediatePhoneCall(code);
-    setTimeout(() => setDialingCode(false), 3000);
+    Platform.OS === "android" ? andCall(code, topUpSim) : iosCall(code);
+    setDialingCode(false);
   };
 
   /** Handles rescanning pin */
@@ -136,7 +138,10 @@ export default function TopUp() {
   };
 
   return (
-    <View style={{ flex: 1 }} onTouchStart={handleTouchFocus}>
+    <View
+      style={{ height: "100%", width: "100%" }}
+      onTouchStart={handleTouchFocus}
+    >
       {/* DONTTOUCH: Removing this conditional mounting will freeze camera 
       on other screens, regardless of the value of `isActive` prop 
       */}
@@ -161,36 +166,38 @@ export default function TopUp() {
         />
       )}
       {/* Camera Overlay */}
-      <View style={tw`p-6 bg-transparent flex-1`}>
+      <View style={tw`p-6 bg-transparent h-full`}>
         <PositonGuide />
-        <View style={tw`flex-1 justify-end pb-6`}>
-          {cameraDevice?.hasTorch && (
-            <Button
-              style={tw`self-center`}
-              onPress={() =>
-                setCameraTorch((cameraTorch) =>
-                  cameraTorch === "off" && cameraHasTorch ? "on" : "off"
-                )
-              }
-              type="square"
-              loading={dialingCode}
-              fill={false}
-              icon={cameraTorch === "off" ? "ios-flash" : "ios-flash-off"}
-            />
-          )}
-          <Icon
-            color={ThemeColors.secondary}
-            name="home"
-            size={scale(23)}
-            style={tw`self-end`}
-            onPress={() => {
-              router.push("/home/");
-            }}
+        <View style={tw`flex-1 justify-end`}>
+          <Button
+            style={tw`self-center`}
+            onPress={() =>
+              setCameraTorch((cameraTorch) =>
+                cameraTorch === "off" && cameraHasTorch ? "on" : "off"
+              )
+            }
+            type="square"
+            fill={false}
+            icon={cameraTorch === "off" ? "ios-flash" : "ios-flash-off"}
           />
+          <View
+            style={tw`flex-row justify-between items-center mt-8 px-8 mb-6`}
+          >
+            <SimSelector onSelect={(simNumber) => setTopUpSim(simNumber)} />
+            <Icon
+              color={ThemeColors.secondary}
+              name="home"
+              size={scale(23)}
+              onPress={() => {
+                router.push("/home/");
+              }}
+            />
+          </View>
         </View>
       </View>
 
       <FrameGuide
+        align="top"
         height={"15%"}
         animating={!cameraPaused}
         onLayout={setCameraFocus}
@@ -210,7 +217,10 @@ export default function TopUp() {
         <SinglePinConfirmSheet
           ref={confirmationSheetRef}
           detectedPin={detectedPins[0]}
-          onConfirm={handleConfirmPin}
+          onConfirm={(pin) => {
+            handleConfirmPin(pin);
+            confirmationSheetRef.current?.close();
+          }}
           confirmBtnLoading={dialingCode}
           onScanAgain={handleScanAgain}
           onClose={handleConfirmSheetClose}
