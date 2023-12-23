@@ -51,7 +51,7 @@ const FeatureCard = ({
     >
       {FeatureImage}
       <View style={tw`flex-1 ml-4`}>
-        <Text type="label" color="gray">
+        <Text type="paragraph (bold)" color="gray">
           {label}
         </Text>
         <Text type="label (small)" color="lightGray">{description}</Text>

@@ -11,6 +11,11 @@ export default ({ config }: ConfigContext): Partial<ExpoConfig> => ({
           "$(PRODUCT_NAME) needs access to your camera, to enable scanning features",
       },
     ],
+    [
+      // rn-direct-phone-call needs android API level 23
+      "./expo_plugins/min_android_sdk_version/build",
+      23,
+    ],
   ],
   extra: {
     eas: {

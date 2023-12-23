@@ -69,7 +69,16 @@ export interface FrameGuideProps {
 
   /** Height of the frame guide in percentage or numbers */
   height: ViewStyle["height"];
+
+  /** Determines the position of the frame guiide along the y axis */
+  align?: "top" | "middle" | "bottom";
 }
+
+const frameAlignment = {
+  top: "start",
+  middle: "center",
+  bottom: "end",
+};
 
 /**
  * Renders a rectangular focus mask or frame guide view that looks
@@ -80,6 +89,7 @@ const FrameGuide = ({
   onLayout,
   animating = true,
   height,
+  align = "middle",
 }: FrameGuideProps) => {
   const animatedTranslateX = useSharedValue(
     20 /* (w-20) width of FrameGuide right&left */
@@ -126,12 +136,20 @@ const FrameGuide = ({
     <View
       style={[
         { pointerEvents: "none" },
-        tw`absolute top-0 bottom-0 right-0 left-0 justify-center px-6`,
+        tw.style(
+          `absolute top-0 flex-1 h-full bottom-0 right-0 left-0 px-6`,
+          `justify-${frameAlignment[align]}`
+        ),
       ]}
     >
       <View
         onLayout={handleContainerLayout}
-        style={{ height, justifyContent: "space-between" }}
+        style={[
+          { height, justifyContent: "space-between" },
+          align !== "middle" && {
+            [align === "bottom" ? "marginBottom" : "marginTop"]: "50%",
+          },
+        ]}
       >
         {/* Row 1 */}
         <View style={tw`flex-row justify-between items-center`}>
