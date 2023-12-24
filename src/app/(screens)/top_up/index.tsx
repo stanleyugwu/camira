@@ -70,7 +70,6 @@ export default function TopUp() {
 
     const detectedPins = text.match(RECHARGE_PIN_REGEX);
     if (detectedPins?.length) {
-      // console.log("PINS", detectedPins);
       if (askForCodeConfirmation) {
         setDetectedPins(detectedPins);
         setCameraPaused(true);
@@ -80,7 +79,7 @@ export default function TopUp() {
         // which will be the longest detected pin
         const firstMatch = detectedPins[0];
         setCameraPaused(true);
-        handleConfirmPin(firstMatch);
+        handleConfirmPin(firstMatch, true);
         setCameraPaused(false);
       }
     }
@@ -117,12 +116,19 @@ export default function TopUp() {
   };
 
   /** Handles dialing code after pin has been confirmed */
-  const handleConfirmPin = (pin: string) => {
+  const handleConfirmPin = (
+    /** confirmed pin */
+    pin: string,
+    /** Determines whether pin is last pin
+     * from the list so to close the sheet */
+    isLastPin: boolean
+  ) => {
     setDialingCode(true);
     pin = pin?.replace(/\D/gi, ""); // remove all non-digit
     const code = `${rechargePrefixCode}${pin}#`;
-    console.log("FINAL PIN:", code);
     Platform.OS === "android" ? andCall(code, topUpSim) : iosCall(code);
+
+    if (isLastPin) confirmationSheetRef.current?.close();
     setDialingCode(false);
   };
 
@@ -136,6 +142,8 @@ export default function TopUp() {
   const handleConfirmSheetClose = () => {
     setCameraPaused(false);
   };
+
+  // confirmationSheetRef.current?.open();
 
   return (
     <View
@@ -165,12 +173,13 @@ export default function TopUp() {
           style={StyleSheet.absoluteFill}
         />
       )}
+
       {/* Camera Overlay */}
-      <View style={tw`p-6 bg-transparent h-full`}>
+      <View style={tw.style(`p-6 flex-1`)}>
         <PositonGuide />
         <View style={tw`flex-1 justify-end`}>
           <Button
-            style={tw`self-center`}
+            style={tw.style(`self-center`, !cameraHasTorch && "hidden")}
             onPress={() =>
               setCameraTorch((cameraTorch) =>
                 cameraTorch === "off" && cameraHasTorch ? "on" : "off"
@@ -217,10 +226,7 @@ export default function TopUp() {
         <SinglePinConfirmSheet
           ref={confirmationSheetRef}
           detectedPin={detectedPins[0]}
-          onConfirm={(pin) => {
-            handleConfirmPin(pin);
-            confirmationSheetRef.current?.close();
-          }}
+          onConfirm={(pin) => handleConfirmPin(pin, true)}
           confirmBtnLoading={dialingCode}
           onScanAgain={handleScanAgain}
           onClose={handleConfirmSheetClose}

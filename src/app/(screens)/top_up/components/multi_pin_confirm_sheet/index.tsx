@@ -1,5 +1,5 @@
 //import libraries
-import React, { forwardRef, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { View, ViewabilityConfigCallbackPairs } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { BottomSheetMethods } from "@devvie/bottom-sheet";
@@ -8,10 +8,7 @@ import tw from "~utils/tailwind";
 import ConfirmSheetActionButtons from "../ConfirmSheetActionButtons";
 import { SinglePinConfirmSheetProps } from "../SinglePinConfirmSheet";
 import Text from "~components/Text";
-import Icon from "@expo/vector-icons/Ionicons";
-import SquishyButton from "~components/SquishyButton";
-import { scale, verticalScale } from "react-native-size-matters";
-import ThemeColors from "~constants/theme";
+import { verticalScale } from "react-native-size-matters";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -19,6 +16,7 @@ import Animated, {
 import RenderDetectedPin, {
   getItemHeight,
 } from "./components/RenderDetectedPin";
+import ListScrollButton, { ListScroller } from "./components/ListScrollButton";
 
 // constants
 const EMPTY = "EMPTY";
@@ -27,12 +25,19 @@ export const LIST_HEIGHT = verticalScale(100);
 type MultiPinConfirmSheetProps = {
   /** Detected pins for user to confirm */
   detectedPins: SinglePinConfirmSheetProps["detectedPin"][];
+  /** Called when a pin from the list is confirmed by user */
+  onConfirm: (
+    /** The pin thta was confirmed */
+    confirmedPin: string,
+    /** Whether the confirmed pin is the last in the list */
+    isLastPin: boolean
+  ) => void;
 } & Pick<
   SinglePinConfirmSheetProps,
-  "onClose" | "onConfirm" | "onScanAgain" | "confirmBtnLoading"
+  "onClose" | "onScanAgain" | "confirmBtnLoading"
 >;
 
-/** Shos a bottom sheet for confirming detected single recharge pin */
+/** Shos a bottom sheet for confirming detected single top-up pin */
 const MultiPinConfirmSheet = forwardRef<
   BottomSheetMethods,
   MultiPinConfirmSheetProps
@@ -42,6 +47,8 @@ const MultiPinConfirmSheet = forwardRef<
     ref
   ) => {
     const [listCurrentItemIdx, setListCurrentItemIdx] = useState(0);
+    // slightly modified pin
+    const [pins, setPins] = useState(detectedPins);
     const listRef = useRef<FlatList>();
     const listscrollY = useSharedValue(0);
     const onPinListScroll = useAnimatedScrollHandler({
@@ -65,44 +72,53 @@ const MultiPinConfirmSheet = forwardRef<
 
     const ITEM_HEIGHT = getItemHeight(LIST_HEIGHT);
 
-    // slightly modified pin
-    const pins = useMemo(
-      () => [
-        EMPTY /* <= This is to add padding to the top of the first item*/,
-        ...detectedPins,
-        EMPTY /* <= This is to add padding to the bottom of the last item*/,
-      ],
-      [detectedPins.length]
-    );
-
     // handles crolling list up or down
-    const scrollList = (direction: "up" | "down") => {
-      return () => {
-        const nextIdx =
-          direction === "up"
-            ? Math.min(listCurrentItemIdx + 1, pins.length - 1)
-            : Math.max(listCurrentItemIdx - 1, 0);
+    const scrollList: ListScroller = (direction) => {
+      const nextIdx =
+        direction === "up"
+          ? Math.min(listCurrentItemIdx + 1, pins.length - 1)
+          : Math.max(listCurrentItemIdx - 1, 0);
 
-        listRef.current?.scrollToIndex({
-          index: nextIdx,
-          animated: true,
-        });
-      };
+      listRef.current?.scrollToIndex({
+        index: nextIdx,
+        animated: true,
+      });
     };
+
+    const handlePinConfirmation = () => {
+      // delete pin from internal list,
+      // then call onConfirm callback
+      const pinsCopy = [...pins];
+      pinsCopy?.splice(listCurrentItemIdx, 1);
+      onConfirm(pins[listCurrentItemIdx], pinsCopy.length === 0);
+      setPins(pinsCopy);
+    };
+
+    const pinsWithEmptyItems = [
+      EMPTY /* <= This is to add padding to the top of the first item*/,
+      ...pins,
+      EMPTY /* <= This is to add padding to the bottom of the last item*/,
+    ];
+
+    // handles keeping internal pins state in sync
+    // with external detected pins
+    useEffect(() => {
+      setPins(detectedPins);
+    }, [detectedPins?.length]);
 
     return (
       <BottomSheet
         ref={ref}
         backdropMaskColor={"transparent"}
         height={"60%"}
-        title="CONFIRM THE RECHARGE PIN"
+        title="CONFIRM THE TOP-UP PIN"
         onClose={onClose}
       >
         {/* TODO: Convert this `View` to component and re-use across app */}
         <View style={tw`p-2 bg-primary rounded-md mt-3`}>
           <Text color="lightGray" type="label" style={tw`text-center`}>
-            Multiple valid recharge pins were detected from the scan, please
-            confirm the correct pin
+            Multiple valid top-up pins were detected, please confirm the valid
+            pin. You can confirm multiple pins to top-up multiple times.
           </Text>
         </View>
         <View style={tw`w-full mt-8`}>
@@ -118,7 +134,7 @@ const MultiPinConfirmSheet = forwardRef<
               viewabilityConfigCallbackPairs={viewabilityConfig}
               onScroll={onPinListScroll}
               style={[{ height: LIST_HEIGHT }]}
-              data={pins}
+              data={pinsWithEmptyItems}
               contentContainerStyle={tw`items-center w-full`}
               keyExtractor={(item, index) => `${item}-${index}`}
               renderItem={({ item, index }) => (
@@ -130,33 +146,11 @@ const MultiPinConfirmSheet = forwardRef<
                 />
               )}
             />
-            <View style={tw`ml-2`}>
-              <SquishyButton onPress={scrollList("up")}>
-                <Icon
-                  name="ios-chevron-up"
-                  size={scale(26)}
-                  color={ThemeColors.accent}
-                />
-              </SquishyButton>
-              <View
-                style={tw.style("bg-primary w-full my-1", {
-                  height: 2,
-                })}
-              />
-              <SquishyButton onPress={scrollList("down")}>
-                <Icon
-                  name="ios-chevron-down"
-                  size={scale(26)}
-                  color={ThemeColors.accent}
-                />
-              </SquishyButton>
-            </View>
+            <ListScrollButton hidden={pins?.length < 2} scroll={scrollList} />
           </View>
 
           <ConfirmSheetActionButtons
-            onConfirm={() => {
-              onConfirm(pins[listCurrentItemIdx + 1]);
-            }}
+            onConfirm={handlePinConfirmation}
             hideEditButton
             confirmBtnLoading={confirmBtnLoading}
             onScanAgain={onScanAgain}

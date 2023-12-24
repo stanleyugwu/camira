@@ -4,6 +4,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { scale } from "react-native-size-matters";
 import Text from "~components/Text";
 import tw from "~utils/tailwind";
 
@@ -73,11 +74,15 @@ const RenderDetectedPin = ({
         height: ITEM_HEIGHT,
       })}
     >
-      <Animated.View style={animatedStyle}>
+      <Animated.View style={[animatedStyle, { width: "100%" }]}>
         <Text
           color="gray"
           type="subHeading"
-          style={{ fontFamily: "monospace", fontWeight: "bold" }}
+          style={{
+            fontFamily: "monospace",
+            fontSize: scale(20),
+            fontWeight: "bold",
+          }}
         >
           {item}
         </Text>
